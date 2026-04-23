@@ -66,6 +66,7 @@ class Switch_Dict(app_manager.OSKenApp):
         # get the mac
         dst = eth_pkt.dst
         src = eth_pkt.src
+        self.logger.info('packet: %s %s %s %s', dpid, src, dst, in_port)
         # get protocols
         header_list = dict((p.protocol_name, p) for p in pkt.protocols if type(p) != str)
         if dst == ETHERNET_MULTICAST and ARP in header_list:
