@@ -13,6 +13,7 @@ class Switch(app_manager.OSKenApp):
     def __init__(self, *args, **kwargs):
         super(Switch, self).__init__(*args, **kwargs)
         # maybe you need a global data structure to save the mapping
+        self.mac_to_port = {}
         
     def add_flow(self, datapath, priority, match, actions,idle_timeout=0,hard_timeout=0):
         dp = datapath
@@ -55,8 +56,31 @@ class Switch(app_manager.OSKenApp):
         self.logger.info('packet: %s %s %s %s', dpid, src, dst, in_port)
         
         # You need to code here to avoid the direct flooding
-        # Have fun!
-        # :)
+        if dpid not in self.mac_to_port:
+            self.mac_to_port[dpid] = {}
+
+        # Learn source MAC on the incoming port.
+        self.mac_to_port[dpid][src] = in_port
+
+        if dst in self.mac_to_port[dpid]:
+            out_port = self.mac_to_port[dpid][dst]
+        else:
+            out_port = ofp.OFPP_FLOOD
+
+        actions = [parser.OFPActionOutput(out_port)]
+
+        if out_port != ofp.OFPP_FLOOD:
+            match = parser.OFPMatch(in_port=in_port, eth_src=src, eth_dst=dst)
+            self.add_flow(dp, 1, match, actions)
+
+        out = parser.OFPPacketOut(
+            datapath=dp,
+            buffer_id=ofp.OFP_NO_BUFFER,
+            in_port=in_port,
+            actions=actions,
+            data=msg.data,
+        )
+        dp.send_msg(out)
 
 if __name__ == '__main__':
     log.init_log()
