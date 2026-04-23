@@ -1,0 +1,15 @@
+[project]
+name = "lab4"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "mininet>=2.3.0.dev6",
+    "networkx>=3.2.1",
+    "ryu",
+]
+
+
+[tool.uv.sources]
+ryu = { path = "./ryu" }
