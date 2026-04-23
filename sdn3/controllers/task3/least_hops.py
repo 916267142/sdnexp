@@ -63,7 +63,6 @@ class LeastHops(app_manager.OSKenApp):
         dst_mac = eth_pkt.dst
         src_mac = eth_pkt.src
 
-
         if isinstance(arp_pkt, arp.arp):
             self.handle_arp(msg, in_port, dst_mac,src_mac, pkt,pkt_type)
 
@@ -89,8 +88,6 @@ class LeastHops(app_manager.OSKenApp):
         if not dpid_path:
             return
 
-
-
         self.path=dpid_path
         # get port path:  h1 -> in_port, s1, out_port -> h2
         port_path = []
@@ -100,7 +97,6 @@ class LeastHops(app_manager.OSKenApp):
             port_path.append((in_port, dpid_path[i], out_port))
         self.show_path(src_ip, dst_ip, port_path)
         # calc path delay
-
 
         # send flow mod
         for node in port_path:

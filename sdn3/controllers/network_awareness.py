@@ -35,9 +35,7 @@ class NetworkAwareness(app_manager.OSKenApp):
         self.topo_map = nx.Graph()
         self.topo_thread = hub.spawn(self._get_topology)
 
-
         self.weight = 'hop'
-
 
     def add_flow(self, datapath, priority, match, actions):
         dp = datapath
@@ -69,6 +67,7 @@ class NetworkAwareness(app_manager.OSKenApp):
 
         if ev.state == DEAD_DISPATCHER:
             del self.switch_info[dpid]
+
     def _get_topology(self):
         hub.sleep(0.1)  # wait for other apps to initialize
         _hosts, _switches, _links = None, None, None
